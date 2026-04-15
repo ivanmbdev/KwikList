@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/kwiklist_db}
+    username: ${SPRING_DATASOURCE_USERNAME:kwiklist}
+    password: ${SPRING_DATASOURCE_PASSWORD:kwikpassword}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true

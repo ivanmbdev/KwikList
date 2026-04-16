@@ -125,7 +125,7 @@ Para invitar a otros miembros, la app genera un código de 8 caracteres a partir
 const getShortCode = (id: string) => id.substring(0, 8).toUpperCase();
 ```
 
-El usuario puede compartir este código o enviar directamente un enlace tipo `https://kwiklist.ejemplo.com?join=X7B9WC01`. Al abrir ese enlace, la app detecta el parámetro `join` en la URL, busca la lista correspondiente, une automáticamente al usuario y limpia la URL con `history.replaceState` para que no se repita el join si se recarga la página.
+El usuario puede compartir este código o enviar directamente un enlace tipo `https://kwiklist.duckdns.org?join=X7B9WC01`. Al abrir ese enlace, la app detecta el parámetro `join` en la URL, busca la lista correspondiente, une automáticamente al usuario y limpia la URL con `history.replaceState` para que no se repita el join si se recarga la página.
 
 ### 5. Edición de nombre de lista
 
@@ -327,12 +327,12 @@ Por defecto, la app compilada busca el backend en la misma URL desde la que se s
 
 ```typescript
 server: {
-  url: 'https://TU-DOMINIO-O-IP',
+  url: 'https://kwiklist.duckdns.org',
   androidScheme: 'https',
 },
 ```
 
-Después vuelve a ejecutar `npm run build && npx cap sync` y reinstala la app.
+Para desarrollo en local, comenta la línea `url` en `capacitor.config.ts`. Después vuelve a ejecutar `npm run build && npx cap sync` y reinstala la app.
 
 ---
 
@@ -385,16 +385,18 @@ sudo apt update
 sudo apt install caddy
 ```
 
+Si vas a usar **Caddy** en el mismo VPS, no puede compartir el puerto 80 con el contenedor Nginx. En `docker-compose.prod.yml`, mapea el frontend solo en loopback (ej. `127.0.0.1:8080:80`) y deja el 80 libre para Caddy.
+
 ```bash
 # Configurar Caddy (/etc/caddy/Caddyfile)
-kwiklist.tudominio.com {
-    reverse_proxy localhost:3000
+kwiklist.duckdns.org {
+    reverse_proxy localhost:8080
 }
 ```
 
-Caddy obtiene y renueva certificados HTTPS automáticamente con Let's Encrypt.
+Caddy obtiene y renueva certificados HTTPS automáticamente con Let's Encrypt. Si **no** usas Caddy y publicas el stack directamente en el 80, ajusta el `reverse_proxy` al puerto que tengas mapeado.
 
-6. **Actualizar `capacitor.config.ts`** con la URL del VPS y recompilar la app Android.
+6. **`capacitor.config.ts`** ya apunta a `https://kwiklist.duckdns.org`. Recompila la app Android tras cualquier cambio de URL.
 
 ### Opción B: ngrok (solo para pruebas rápidas)
 
